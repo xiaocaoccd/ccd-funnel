@@ -197,37 +197,37 @@ export default function App() {
   });
 
   const SECTIONS = [
-    { key: "funnel",   label: "🔽 漏斗" },
-    { key: "revenue",  label: "💰 营收" },
-    { key: "variable", label: "📦 变动成本" },
+    { key: "funnel",   label: "🔻 漏斗" },
+    { key: "revenue",  label: "📈 营收" },
+    { key: "variable", label: "🔄 变动成本" },
     { key: "fixed",    label: "🏪 固定成本" },
   ];
 
   if (loading) return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+    <div className="min-h-screen bg-amber-50 flex items-center justify-center">
       <div className="text-center space-y-3">
         <div className="text-5xl">📊</div>
-        <p className="text-gray-400 text-sm">数据加载中，请稍候...</p>
+        <p className="text-stone-400 text-sm">数据加载中，请稍候...</p>
       </div>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 p-3 font-sans">
+    <div className="min-h-screen bg-amber-50 p-3 font-sans">
       <div className="max-w-5xl mx-auto space-y-4">
 
         {/* Header */}
         <div className="flex items-start justify-between pt-1">
           <div>
-            <h1 className="text-xl font-bold text-gray-800">📊 CCD实体店经营漏斗 · 数据模板</h1>
-            <p className="text-xs text-gray-400 mt-0.5">漏斗转化 · 变动成本 · 固定成本 · 营收毛利 · 净利润 全链路追踪</p>
+            <h1 className="text-xl font-bold text-stone-800">🎞️ 初见 · 经营数据看板</h1>
+            <p className="text-xs text-stone-400 mt-0.5">漏斗转化 · 变动成本 · 固定成本 · 营收毛利 · 净利润 全链路追踪</p>
           </div>
           <div className="text-xs text-right shrink-0 ml-4 mt-1">
             {saving
               ? <span className="text-blue-400 animate-pulse">⏳ 同步中...</span>
               : lastSaved
                 ? <span className="text-green-500">✅ 已保存 {lastSaved.toLocaleTimeString("zh-CN",{hour:"2-digit",minute:"2-digit"})}</span>
-                : <span className="text-gray-300">☁️ 云端同步</span>
+                : <span className="text-stone-300">☁️ 云端同步</span>
             }
           </div>
         </div>
@@ -237,19 +237,19 @@ export default function App() {
           {MONTHS.map((m, i) => (
             <button key={i} onClick={() => setActiveMonth(i)}
               className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
-                activeMonth === i ? "bg-blue-600 text-white shadow" : "bg-white text-gray-400 border border-gray-200 hover:border-blue-300"
+                activeMonth === i ? "bg-amber-700 text-white shadow" : "bg-white text-stone-400 border border-stone-200 hover:border-amber-400"
               }`}>{m}</button>
           ))}
         </div>
 
         {/* Main Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="flex border-b border-gray-100">
+          <div className="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden">
+            <div className="flex border-b border-stone-100">
               {SECTIONS.map((s) => (
                 <button key={s.key} onClick={() => setSection(s.key)}
                   className={`flex-1 py-2.5 text-xs font-medium transition-all ${
-                    section === s.key ? "border-b-2 border-blue-500 text-blue-600 bg-blue-50" : "text-gray-400 hover:text-gray-600"
+                    section === s.key ? "border-b-2 border-amber-500 text-amber-700 bg-amber-50" : "text-stone-400 hover:text-stone-600"
                   }`}>{s.label}</button>
               ))}
             </div>
@@ -258,10 +258,10 @@ export default function App() {
                 <div className="space-y-3">
                   {FUNNEL_FIELDS.map((f) => (
                     <div key={f.key} className="flex items-center gap-3">
-                      <label className="text-xs text-gray-500 w-20 shrink-0">{f.label}</label>
+                      <label className="text-xs text-stone-500 w-20 shrink-0">{f.label}</label>
                       <input type="number" min="0" value={row[f.key]}
                         onChange={(e) => setField(f.key, e.target.value)} placeholder="0"
-                        className="flex-1 border border-gray-200 rounded-lg px-3 py-1.5 text-sm text-right focus:outline-none focus:ring-2 focus:ring-blue-200" />
+                        className="flex-1 border border-stone-200 rounded-lg px-3 py-1.5 text-sm text-right focus:outline-none focus:ring-2 focus:ring-amber-200" />
                     </div>
                   ))}
                 </div>
@@ -269,20 +269,20 @@ export default function App() {
               {section === "revenue" && (
                 <div className="space-y-3">
                   {[
-                    { key: "revenueTarget", label: "月度营收目标 (¥)", placeholder: "如: 50000", ring: "focus:ring-gray-200" },
+                    { key: "revenueTarget", label: "月度营收目标 (¥)", placeholder: "如: 50000", ring: "focus:ring-stone-200" },
                     { key: "revenue",       label: "月度实际营收 (¥)", placeholder: "如: 48000", ring: "focus:ring-green-200" },
-                    { key: "grossProfit",   label: "月度毛利 (¥)",     placeholder: "如: 25000", ring: "focus:ring-blue-200" },
+                    { key: "grossProfit",   label: "月度毛利 (¥)",     placeholder: "如: 25000", ring: "focus:ring-amber-200" },
                   ].map((f) => (
                     <div key={f.key}>
-                      <label className="text-xs text-gray-500">{f.label}</label>
+                      <label className="text-xs text-stone-500">{f.label}</label>
                       <input type="number" min="0" value={row[f.key]}
                         onChange={(e) => setField(f.key, e.target.value)} placeholder={f.placeholder}
-                        className={`w-full mt-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 ${f.ring}`} />
+                        className={`w-full mt-1 border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 ${f.ring}`} />
                     </div>
                   ))}
-                  <div className="mt-2 bg-gray-50 rounded-xl p-3 space-y-2 text-xs">
+                  <div className="mt-2 bg-amber-50 rounded-xl p-3 space-y-2 text-xs">
                     {[
-                      { label: "营收达成率",    val: calc.achievePct, color: "text-blue-600" },
+                      { label: "营收达成率",    val: calc.achievePct, color: "text-amber-700" },
                       { label: "毛利率",         val: calc.gpRate,     color: "text-green-600" },
                       { label: "变动成本占营收", val: calc.varRatio,   color: calc.varRatioHigh ? "text-red-500" : "text-green-600" },
                       { label: "固定成本占营收", val: calc.fixedRatio, color: "text-orange-500" },
@@ -296,7 +296,7 @@ export default function App() {
                       },
                     ].map((item) => (
                       <div key={item.label} className="flex justify-between">
-                        <span className="text-gray-500">{item.label}</span>
+                        <span className="text-stone-500">{item.label}</span>
                         <span className={`font-bold ${item.color}`}>{item.val}</span>
                       </div>
                     ))}
@@ -308,31 +308,31 @@ export default function App() {
               )}
               {section === "variable" && (
                 <div className="space-y-2">
-                  <p className="text-xs text-gray-400 mb-2">按单价 × 数量录入，随业务量浮动的成本</p>
+                  <p className="text-xs text-stone-400 mb-2">按单价 × 数量录入，随业务量浮动的成本</p>
                   {row.rewards.map((rw) => {
                     const sub = n(rw.unitCost) * n(rw.qty);
                     return (
-                      <div key={rw.id} className="border border-gray-100 rounded-xl p-3">
+                      <div key={rw.id} className="border border-stone-100 rounded-xl p-3">
                         <div className="mb-2">
-                          <span className="text-xs font-medium text-gray-700">{rw.name}</span>
-                          <span className="text-xs text-gray-400 ml-1">· {rw.desc}</span>
+                          <span className="text-xs font-medium text-stone-700">{rw.name}</span>
+                          <span className="text-xs text-stone-400 ml-1">· {rw.desc}</span>
                         </div>
                         <div className="flex gap-2">
                           <div className="flex-1">
-                            <label className="text-xs text-gray-400">单价(¥)</label>
+                            <label className="text-xs text-stone-400">单价(¥)</label>
                             <input type="number" min="0" value={rw.unitCost}
                               onChange={(e) => setReward(rw.id, "unitCost", e.target.value)}
-                              className="w-full mt-0.5 border border-gray-200 rounded-lg px-2 py-1 text-xs text-right focus:outline-none focus:ring-2 focus:ring-blue-200" />
+                              className="w-full mt-0.5 border border-stone-200 rounded-lg px-2 py-1 text-xs text-right focus:outline-none focus:ring-2 focus:ring-amber-200" />
                           </div>
                           <div className="flex-1">
-                            <label className="text-xs text-gray-400">数量</label>
+                            <label className="text-xs text-stone-400">数量</label>
                             <input type="number" min="0" value={rw.qty}
                               onChange={(e) => setReward(rw.id, "qty", e.target.value)} placeholder="0"
-                              className="w-full mt-0.5 border border-gray-200 rounded-lg px-2 py-1 text-xs text-right focus:outline-none focus:ring-2 focus:ring-green-200" />
+                              className="w-full mt-0.5 border border-stone-200 rounded-lg px-2 py-1 text-xs text-right focus:outline-none focus:ring-2 focus:ring-green-200" />
                           </div>
                           <div className="flex-1">
-                            <label className="text-xs text-gray-400">小计(¥)</label>
-                            <div className="w-full mt-0.5 bg-gray-50 border border-gray-100 rounded-lg px-2 py-1 text-xs text-right font-semibold text-gray-700">
+                            <label className="text-xs text-stone-400">小计(¥)</label>
+                            <div className="w-full mt-0.5 bg-stone-50 border border-stone-100 rounded-lg px-2 py-1 text-xs text-right font-semibold text-stone-700">
                               {sub.toFixed(0)}
                             </div>
                           </div>
@@ -340,31 +340,31 @@ export default function App() {
                       </div>
                     );
                   })}
-                  <div className="flex justify-between items-center bg-blue-600 rounded-xl px-4 py-2.5 mt-1">
-                    <span className="text-xs text-blue-100">本月变动成本合计</span>
+                  <div className="flex justify-between items-center bg-amber-700 rounded-xl px-4 py-2.5 mt-1">
+                    <span className="text-xs text-amber-100">本月变动成本合计</span>
                     <span className="text-white font-bold">¥{calc.totalVar.toFixed(0)}</span>
                   </div>
                 </div>
               )}
               {section === "fixed" && (
                 <div className="space-y-2">
-                  <p className="text-xs text-gray-400 mb-2">每月刚性支出，直接填月度金额</p>
+                  <p className="text-xs text-stone-400 mb-2">每月刚性支出，直接填月度金额</p>
                   {row.fixedCosts.map((fc) => (
-                    <div key={fc.id} className="border border-gray-100 rounded-xl p-3">
+                    <div key={fc.id} className="border border-stone-100 rounded-xl p-3">
                       <div className="mb-2">
-                        <span className="text-xs font-medium text-gray-700">{fc.name}</span>
-                        <span className="text-xs text-gray-400 ml-1">· {fc.desc}</span>
+                        <span className="text-xs font-medium text-stone-700">{fc.name}</span>
+                        <span className="text-xs text-stone-400 ml-1">· {fc.desc}</span>
                       </div>
                       <div className="flex gap-2">
                         <div className="flex-1">
-                          <label className="text-xs text-gray-400">月度金额(¥)</label>
+                          <label className="text-xs text-stone-400">月度金额(¥)</label>
                           <input type="number" min="0" value={fc.amount}
                             onChange={(e) => setFixedCost(fc.id, e.target.value)} placeholder="0"
-                            className="w-full mt-0.5 border border-gray-200 rounded-lg px-2 py-1 text-xs text-right focus:outline-none focus:ring-2 focus:ring-orange-200" />
+                            className="w-full mt-0.5 border border-stone-200 rounded-lg px-2 py-1 text-xs text-right focus:outline-none focus:ring-2 focus:ring-orange-200" />
                         </div>
                         <div className="flex-1">
-                          <label className="text-xs text-gray-400">占营收比</label>
-                          <div className="w-full mt-0.5 bg-gray-50 border border-gray-100 rounded-lg px-2 py-1 text-xs text-right font-semibold text-orange-600">
+                          <label className="text-xs text-stone-400">占营收比</label>
+                          <div className="w-full mt-0.5 bg-stone-50 border border-stone-100 rounded-lg px-2 py-1 text-xs text-right font-semibold text-orange-600">
                             {n(row.revenue) > 0 ? ((n(fc.amount) / n(row.revenue)) * 100).toFixed(1) + "%" : "—"}
                           </div>
                         </div>
@@ -381,8 +381,8 @@ export default function App() {
           </div>
 
           <div className="space-y-4">
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
-              <h3 className="text-sm font-semibold text-gray-700 mb-3">📐 关键转化率</h3>
+            <div className="bg-white rounded-2xl shadow-sm border border-stone-100 p-4">
+              <h3 className="text-sm font-semibold text-stone-700 mb-3">🎯 关键转化率</h3>
               <div className="space-y-2">
                 {[
                   { label: "发帖转化率", val: calc.fatiePct,      sub: "发帖 ÷ 到店" },
@@ -393,15 +393,15 @@ export default function App() {
                   { label: "转介绍率",   val: calc.zhuanjie_pct,  sub: "转介绍 ÷ 成交" },
                 ].map((item) => (
                   <div key={item.label} className="flex justify-between items-center text-xs">
-                    <span className="text-gray-500">{item.label}
-                      <span className="text-gray-300 ml-1">({item.sub})</span>
+                    <span className="text-stone-500">{item.label}
+                      <span className="text-stone-300 ml-1">({item.sub})</span>
                     </span>
-                    <span className="font-bold text-blue-600">{item.val}</span>
+                    <span className="font-bold text-amber-700">{item.val}</span>
                   </div>
                 ))}
               </div>
             </div>
-            <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-4 text-white">
+            <div className="bg-gradient-to-br from-stone-800 to-stone-900 rounded-2xl p-4 text-white">
               <h3 className="text-sm font-semibold mb-3">💰 成本 & ROI 模型</h3>
               <div className="grid grid-cols-2 gap-2">
                 {[
@@ -412,27 +412,27 @@ export default function App() {
                 ].map((item) => (
                   <div key={item.label} className={`rounded-xl p-3 ${item.high ? "bg-red-500 bg-opacity-40" : "bg-white bg-opacity-10"}`}>
                     <div className="text-base font-bold">{item.val}</div>
-                    <div className="text-xs text-gray-200 mt-0.5">{item.label}</div>
-                    <div className="text-xs text-gray-400">{item.sub}</div>
+                    <div className="text-xs text-stone-200 mt-0.5">{item.label}</div>
+                    <div className="text-xs text-stone-400">{item.sub}</div>
                   </div>
                 ))}
               </div>
               <div className="mt-3 space-y-1.5">
                 <div className="bg-white bg-opacity-5 rounded-xl px-4 py-2 flex justify-between items-center">
-                  <span className="text-xs text-gray-400">变动成本合计</span>
-                  <span className="text-base font-bold text-blue-300">¥{calc.totalVar.toFixed(0)}</span>
+                  <span className="text-xs text-stone-400">变动成本合计</span>
+                  <span className="text-base font-bold text-amber-300">¥{calc.totalVar.toFixed(0)}</span>
                 </div>
                 <div className="bg-white bg-opacity-5 rounded-xl px-4 py-2 flex justify-between items-center">
-                  <span className="text-xs text-gray-400">固定成本合计</span>
+                  <span className="text-xs text-stone-400">固定成本合计</span>
                   <span className="text-base font-bold text-orange-300">¥{calc.totalFixed.toFixed(0)}</span>
                 </div>
                 <div className="bg-white bg-opacity-10 rounded-xl px-4 py-2 flex justify-between items-center">
-                  <span className="text-xs text-gray-300 font-medium">月度总成本</span>
+                  <span className="text-xs text-stone-300 font-medium">月度总成本</span>
                   <span className="text-lg font-bold text-yellow-400">¥{calc.totalCost.toFixed(0)}</span>
                 </div>
                 {calc.netProfitValid && (
                   <div className={`rounded-xl px-4 py-2 flex justify-between items-center ${calc.netProfit >= 0 ? "bg-green-500 bg-opacity-20" : "bg-red-500 bg-opacity-20"}`}>
-                    <span className="text-xs text-gray-300 font-medium">净利润估算</span>
+                    <span className="text-xs text-stone-300 font-medium">净利润估算</span>
                     <span className={`text-lg font-bold ${calc.netProfit >= 0 ? "text-green-400" : "text-red-400"}`}>
                       {calc.netProfit >= 0 ? `¥${calc.netProfit.toFixed(0)}` : `-¥${Math.abs(calc.netProfit).toFixed(0)}`}
                     </span>
@@ -444,18 +444,18 @@ export default function App() {
         </div>
 
         {n(row.daodian) > 0 && (
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
-            <h3 className="text-sm font-semibold text-gray-700 mb-3">🔽 {MONTHS[activeMonth]} 用户转化漏斗</h3>
+          <div className="bg-white rounded-2xl shadow-sm border border-stone-100 p-4">
+            <h3 className="text-sm font-semibold text-stone-700 mb-3">🔻 {MONTHS[activeMonth]} 用户转化漏斗</h3>
             <div className="space-y-2">
               {FUNNEL_FIELDS.map((f, i) => {
                 const val = n(row[f.key]);
                 const max = n(row.daodian) || 1;
                 const w = Math.max((val / max) * 100, val > 0 ? 5 : 0);
-                const COLORS = ["bg-blue-500","bg-purple-500","bg-indigo-500","bg-cyan-500","bg-green-500","bg-yellow-500","bg-orange-500"];
+                const COLORS = ["bg-amber-600","bg-amber-500","bg-yellow-500","bg-orange-400","bg-green-500","bg-teal-500","bg-stone-500"];
                 return (
                   <div key={f.key} className="flex items-center gap-3">
-                    <span className="text-xs text-gray-400 w-16 text-right shrink-0">{f.label}</span>
-                    <div className="flex-1 bg-gray-100 rounded-full h-6">
+                    <span className="text-xs text-stone-400 w-16 text-right shrink-0">{f.label}</span>
+                    <div className="flex-1 bg-stone-100 rounded-full h-6">
                       <div className={`${COLORS[i]} h-6 rounded-full flex items-center justify-end pr-2 transition-all duration-500`} style={{ width: `${w}%` }}>
                         {val > 0 && <span className="text-white text-xs font-bold">{val}</span>}
                       </div>
@@ -468,54 +468,54 @@ export default function App() {
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
-            <h3 className="text-sm font-semibold text-gray-700 mb-3">📈 全年营收 · 毛利 · 成本趋势</h3>
+          <div className="bg-white rounded-2xl shadow-sm border border-stone-100 p-4">
+            <h3 className="text-sm font-semibold text-stone-700 mb-3">📈 全年营收 · 毛利 · 成本趋势</h3>
             <ResponsiveContainer width="100%" height={180}>
               <BarChart data={allMonths} barSize={5} barCategoryGap="30%">
-                <CartesianGrid strokeDasharray="3 3" stroke="#f5f5f5" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#f5f5f4" />
                 <XAxis dataKey="name" tick={{ fontSize: 10 }} />
                 <YAxis tick={{ fontSize: 10 }} />
                 <Tooltip formatter={(v) => `¥${v}`} />
-                <Bar dataKey="营收"    fill="#93c5fd" radius={[3,3,0,0]} />
+                <Bar dataKey="营收"    fill="#d97706" radius={[3,3,0,0]} />
                 <Bar dataKey="毛利"    fill="#6ee7b7" radius={[3,3,0,0]} />
                 <Bar dataKey="变动成本" fill="#fca5a5" radius={[3,3,0,0]} />
                 <Bar dataKey="固定成本" fill="#fdba74" radius={[3,3,0,0]} />
               </BarChart>
             </ResponsiveContainer>
-            <div className="flex flex-wrap gap-3 justify-center mt-1 text-xs text-gray-400">
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-blue-300 inline-block" />营收</span>
+            <div className="flex flex-wrap gap-3 justify-center mt-1 text-xs text-stone-400">
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-amber-500 inline-block" />营收</span>
               <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-emerald-300 inline-block" />毛利</span>
               <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-red-300 inline-block" />变动成本</span>
               <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-orange-300 inline-block" />固定成本</span>
             </div>
           </div>
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
-            <h3 className="text-sm font-semibold text-gray-700 mb-3">👥 全年到店 vs 成交趋势</h3>
+          <div className="bg-white rounded-2xl shadow-sm border border-stone-100 p-4">
+            <h3 className="text-sm font-semibold text-stone-700 mb-3">👥 全年到店 vs 成交趋势</h3>
             <ResponsiveContainer width="100%" height={180}>
               <LineChart data={allMonths}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f5f5f5" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#f5f5f4" />
                 <XAxis dataKey="name" tick={{ fontSize: 10 }} />
                 <YAxis tick={{ fontSize: 10 }} />
                 <Tooltip />
-                <Line type="monotone" dataKey="到店" stroke="#93c5fd" strokeWidth={2} dot={{ r: 3 }} />
+                <Line type="monotone" dataKey="到店" stroke="#d97706" strokeWidth={2} dot={{ r: 3 }} />
                 <Line type="monotone" dataKey="成交" stroke="#6ee7b7" strokeWidth={2} dot={{ r: 3 }} />
               </LineChart>
             </ResponsiveContainer>
-            <div className="flex gap-4 justify-center mt-1 text-xs text-gray-400">
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-blue-300 inline-block" />到店</span>
+            <div className="flex gap-4 justify-center mt-1 text-xs text-stone-400">
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-amber-500 inline-block" />到店</span>
               <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-emerald-300 inline-block" />成交</span>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
-          <h3 className="text-sm font-semibold text-gray-700 mb-3">📦 {MONTHS[activeMonth]} 变动成本明细</h3>
+        <div className="bg-white rounded-2xl shadow-sm border border-stone-100 p-4">
+          <h3 className="text-sm font-semibold text-stone-700 mb-3">🔄 {MONTHS[activeMonth]} 变动成本明细</h3>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
-                <tr className="text-gray-400 border-b border-gray-100">
+                <tr className="text-stone-400 border-b border-stone-100">
                   <th className="text-left py-2 font-medium">项目</th>
-                  <th className="text-left py-2 font-medium text-gray-300">说明</th>
+                  <th className="text-left py-2 font-medium text-stone-300">说明</th>
                   <th className="text-right py-2 font-medium">单价</th>
                   <th className="text-right py-2 font-medium">数量</th>
                   <th className="text-right py-2 font-medium">小计</th>
@@ -527,36 +527,36 @@ export default function App() {
                   const sub = n(rw.unitCost) * n(rw.qty);
                   const share = calc.totalVar > 0 ? ((sub / calc.totalVar) * 100).toFixed(1) + "%" : "—";
                   return (
-                    <tr key={rw.id} className="border-b border-gray-50 hover:bg-gray-50">
-                      <td className="py-2 font-medium text-gray-700">{rw.name}</td>
-                      <td className="py-2 text-gray-300">{rw.desc}</td>
-                      <td className="py-2 text-right text-gray-500">¥{rw.unitCost}</td>
-                      <td className="py-2 text-right text-gray-500">{n(rw.qty) || 0}</td>
-                      <td className="py-2 text-right font-semibold text-gray-700">¥{sub.toFixed(0)}</td>
-                      <td className="py-2 text-right text-blue-500">{share}</td>
+                    <tr key={rw.id} className="border-b border-stone-50 hover:bg-amber-50">
+                      <td className="py-2 font-medium text-stone-700">{rw.name}</td>
+                      <td className="py-2 text-stone-300">{rw.desc}</td>
+                      <td className="py-2 text-right text-stone-500">¥{rw.unitCost}</td>
+                      <td className="py-2 text-right text-stone-500">{n(rw.qty) || 0}</td>
+                      <td className="py-2 text-right font-semibold text-stone-700">¥{sub.toFixed(0)}</td>
+                      <td className="py-2 text-right text-amber-600">{share}</td>
                     </tr>
                   );
                 })}
               </tbody>
               <tfoot>
-                <tr className="bg-blue-50">
-                  <td colSpan={4} className="py-2 pl-2 font-bold text-gray-700">变动成本合计</td>
-                  <td className="py-2 text-right font-bold text-gray-800">¥{calc.totalVar.toFixed(0)}</td>
-                  <td className="py-2 text-right font-bold text-blue-600">100%</td>
+                <tr className="bg-amber-50">
+                  <td colSpan={4} className="py-2 pl-2 font-bold text-stone-700">变动成本合计</td>
+                  <td className="py-2 text-right font-bold text-stone-800">¥{calc.totalVar.toFixed(0)}</td>
+                  <td className="py-2 text-right font-bold text-amber-700">100%</td>
                 </tr>
               </tfoot>
             </table>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
-          <h3 className="text-sm font-semibold text-gray-700 mb-3">🏪 {MONTHS[activeMonth]} 固定成本明细</h3>
+        <div className="bg-white rounded-2xl shadow-sm border border-stone-100 p-4">
+          <h3 className="text-sm font-semibold text-stone-700 mb-3">🏪 {MONTHS[activeMonth]} 固定成本明细</h3>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
-                <tr className="text-gray-400 border-b border-gray-100">
+                <tr className="text-stone-400 border-b border-stone-100">
                   <th className="text-left py-2 font-medium">项目</th>
-                  <th className="text-left py-2 font-medium text-gray-300">说明</th>
+                  <th className="text-left py-2 font-medium text-stone-300">说明</th>
                   <th className="text-right py-2 font-medium">月度金额</th>
                   <th className="text-right py-2 font-medium">占营收</th>
                   <th className="text-right py-2 font-medium">占固定成本</th>
@@ -568,39 +568,39 @@ export default function App() {
                   const revShare = n(row.revenue) > 0 ? ((amt / n(row.revenue)) * 100).toFixed(1) + "%" : "—";
                   const fixShare = calc.totalFixed > 0 ? ((amt / calc.totalFixed) * 100).toFixed(1) + "%" : "—";
                   return (
-                    <tr key={fc.id} className="border-b border-gray-50 hover:bg-gray-50">
-                      <td className="py-2 font-medium text-gray-700">{fc.name}</td>
-                      <td className="py-2 text-gray-300">{fc.desc}</td>
-                      <td className="py-2 text-right font-semibold text-gray-700">¥{amt.toFixed(0)}</td>
+                    <tr key={fc.id} className="border-b border-stone-50 hover:bg-amber-50">
+                      <td className="py-2 font-medium text-stone-700">{fc.name}</td>
+                      <td className="py-2 text-stone-300">{fc.desc}</td>
+                      <td className="py-2 text-right font-semibold text-stone-700">¥{amt.toFixed(0)}</td>
                       <td className="py-2 text-right text-orange-500">{revShare}</td>
-                      <td className="py-2 text-right text-blue-500">{fixShare}</td>
+                      <td className="py-2 text-right text-amber-600">{fixShare}</td>
                     </tr>
                   );
                 })}
               </tbody>
               <tfoot>
                 <tr className="bg-orange-50">
-                  <td colSpan={2} className="py-2 pl-2 font-bold text-gray-700">固定成本合计</td>
-                  <td className="py-2 text-right font-bold text-gray-800">¥{calc.totalFixed.toFixed(0)}</td>
+                  <td colSpan={2} className="py-2 pl-2 font-bold text-stone-700">固定成本合计</td>
+                  <td className="py-2 text-right font-bold text-stone-800">¥{calc.totalFixed.toFixed(0)}</td>
                   <td className="py-2 text-right font-bold text-orange-600">
                     {n(row.revenue) > 0 ? ((calc.totalFixed / n(row.revenue)) * 100).toFixed(1) + "%" : "—"}
                   </td>
-                  <td className="py-2 text-right font-bold text-blue-600">100%</td>
+                  <td className="py-2 text-right font-bold text-amber-700">100%</td>
                 </tr>
               </tfoot>
             </table>
           </div>
         </div>
 
-        <div className="bg-gray-800 rounded-2xl p-4 text-gray-300 text-xs">
-          <h3 className="text-white font-semibold mb-2 text-sm">📋 计算公式说明</h3>
+        <div className="bg-stone-800 rounded-2xl p-4 text-stone-300 text-xs">
+          <h3 className="text-white font-semibold mb-2 text-sm">🧮 计算公式说明</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-y-1 gap-x-4 font-mono leading-relaxed">
             <div>单篇UGC成本  = <span className="text-yellow-400">变动成本 ÷ 发帖人数</span></div>
             <div>私域获客成本 = <span className="text-yellow-400">变动成本 ÷ 加微人数</span></div>
             <div>单笔成交成本 = <span className="text-yellow-400">变动成本 ÷ 成交人数</span></div>
             <div>变动成本占比 = <span className="text-red-400">变动成本 ÷ 月度营收</span></div>
             <div>毛利率       = <span className="text-green-400">毛利 ÷ 实际营收</span></div>
-            <div>营收达成率   = <span className="text-blue-400">实际营收 ÷ 目标营收</span></div>
+            <div>营收达成率   = <span className="text-amber-400">实际营收 ÷ 目标营收</span></div>
             <div>净利润估算   = <span className="text-emerald-400">毛利 − 变动成本 − 固定成本</span></div>
           </div>
         </div>
