@@ -51,6 +51,23 @@ const defaultRow = () => ({
   fixedCosts: DEFAULT_FIXED_COSTS.map((f) => ({ ...f })),
 });
 
+// ── 可折叠区块组件 ──
+function Collapse({ title, dark = false, children }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className={`rounded-2xl shadow-sm overflow-hidden border ${dark ? "bg-stone-800 border-stone-700" : "bg-white border-stone-100"}`}>
+      <button
+        onClick={() => setOpen(!open)}
+        className={`w-full flex items-center justify-between px-4 py-3 transition-all ${dark ? "hover:bg-stone-700" : "hover:bg-stone-50"}`}
+      >
+        <h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-stone-700"}`}>{title}</h3>
+        <span className={`text-xs transition-transform duration-200 ${open ? "rotate-180" : ""} ${dark ? "text-stone-400" : "text-stone-400"}`}>▼</span>
+      </button>
+      {open && <div className="px-4 pb-4">{children}</div>}
+    </div>
+  );
+}
+
 export default function App() {
   const [activeMonth, setActiveMonth] = useState(new Date().getMonth());
   const [section, setSection] = useState("funnel");
@@ -64,7 +81,6 @@ export default function App() {
   const [lastSaved, setLastSaved] = useState(null);
   const saveTimer = useRef(null);
 
-  // 初始加载云端数据
   useEffect(() => {
     (async () => {
       setLoading(true);
@@ -95,7 +111,6 @@ export default function App() {
     })();
   }, []);
 
-  // 防抖自动保存（停止输入 1.2 秒后保存）
   const scheduleSave = (idx, rowData) => {
     if (saveTimer.current) clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(async () => {
@@ -182,6 +197,7 @@ export default function App() {
       achievePct: n(r.revenueTarget) > 0 ? ((rev / n(r.revenueTarget)) * 100).toFixed(1) + "%" : "—",
       netProfit:      gp - totalCost,
       netProfitValid: gp > 0,
+      rev, gp,
     };
   }, [row]);
 
@@ -216,7 +232,7 @@ export default function App() {
     <div className="min-h-screen bg-amber-50 p-3 font-sans">
       <div className="max-w-5xl mx-auto space-y-4">
 
-        {/* Header */}
+        {/* ── Header ── */}
         <div className="flex items-start justify-between pt-1">
           <div>
             <h1 className="text-xl font-bold text-stone-800">🎞️ 初见 · 经营数据看板</h1>
@@ -232,24 +248,80 @@ export default function App() {
           </div>
         </div>
 
-        {/* Month Tabs */}
+        {/* ── Month Tabs ── */}
         <div className="flex flex-wrap gap-1.5">
           {MONTHS.map((m, i) => (
             <button key={i} onClick={() => setActiveMonth(i)}
               className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
-                activeMonth === i ? "bg-amber-700 text-white shadow" : "bg-white text-stone-400 border border-stone-200 hover:border-amber-400"
+                activeMonth === i
+                  ? "bg-amber-700 text-white shadow"
+                  : "bg-white text-stone-400 border border-stone-200 hover:border-amber-400"
               }`}>{m}</button>
           ))}
         </div>
 
-        {/* Main Grid */}
+        {/* ── ★ 核心指标卡片（置顶）★ ── */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {/* 净利润 */}
+          <div className={`rounded-2xl p-4 flex flex-col gap-1 text-white ${
+            !calc.netProfitValid
+              ? "bg-stone-400"
+              : calc.netProfit >= 0
+                ? "bg-green-500"
+                : "bg-red-500"
+          }`}>
+            <span className="text-xs opacity-75">💰 净利润估算</span>
+            <span className="text-2xl font-bold leading-tight">
+              {calc.netProfitValid
+                ? (calc.netProfit >= 0
+                    ? `¥${calc.netProfit.toFixed(0)}`
+                    : `-¥${Math.abs(calc.netProfit).toFixed(0)}`)
+                : "—"}
+            </span>
+            <span className="text-xs opacity-50">毛利 − 变动 − 固定</span>
+          </div>
+
+          {/* 营收达成率 */}
+          <div className="bg-amber-600 rounded-2xl p-4 flex flex-col gap-1 text-white">
+            <span className="text-xs opacity-75">🎯 营收达成率</span>
+            <span className="text-2xl font-bold leading-tight">{calc.achievePct}</span>
+            <span className="text-xs opacity-50">实际 ¥{n(row.revenue).toLocaleString()}</span>
+          </div>
+
+          {/* 毛利率 */}
+          <div className="bg-teal-600 rounded-2xl p-4 flex flex-col gap-1 text-white">
+            <span className="text-xs opacity-75">📊 毛利率</span>
+            <span className="text-2xl font-bold leading-tight">{calc.gpRate}</span>
+            <span className="text-xs opacity-50">毛利 ¥{n(row.grossProfit).toLocaleString()}</span>
+          </div>
+
+          {/* 月度总成本 */}
+          <div className={`rounded-2xl p-4 flex flex-col gap-1 text-white ${calc.varRatioHigh ? "bg-red-500" : "bg-stone-700"}`}>
+            <span className="text-xs opacity-75">🏷️ 月度总成本</span>
+            <span className="text-2xl font-bold leading-tight">¥{calc.totalCost.toFixed(0)}</span>
+            <span className="text-xs opacity-50">变动 + 固定合计</span>
+          </div>
+        </div>
+
+        {/* ── 成本预警 Banner ── */}
+        {calc.varRatioHigh && (
+          <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-2.5 flex items-center gap-2 text-xs text-red-500">
+            ⚠️ 变动成本占比 <strong>{calc.varRatio}</strong>，已超出建议上限 5%，请检查成本结构
+          </div>
+        )}
+
+        {/* ── Main Grid（输入区 + 实时指标）── */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+          {/* 左：输入面板 */}
           <div className="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden">
             <div className="flex border-b border-stone-100">
               {SECTIONS.map((s) => (
                 <button key={s.key} onClick={() => setSection(s.key)}
                   className={`flex-1 py-2.5 text-xs font-medium transition-all ${
-                    section === s.key ? "border-b-2 border-amber-500 text-amber-700 bg-amber-50" : "text-stone-400 hover:text-stone-600"
+                    section === s.key
+                      ? "border-b-2 border-amber-500 text-amber-700 bg-amber-50"
+                      : "text-stone-400 hover:text-stone-600"
                   }`}>{s.label}</button>
               ))}
             </div>
@@ -266,6 +338,7 @@ export default function App() {
                   ))}
                 </div>
               )}
+
               {section === "revenue" && (
                 <div className="space-y-3">
                   {[
@@ -282,30 +355,19 @@ export default function App() {
                   ))}
                   <div className="mt-2 bg-amber-50 rounded-xl p-3 space-y-2 text-xs">
                     {[
-                      { label: "营收达成率",    val: calc.achievePct, color: "text-amber-700" },
-                      { label: "毛利率",         val: calc.gpRate,     color: "text-green-600" },
                       { label: "变动成本占营收", val: calc.varRatio,   color: calc.varRatioHigh ? "text-red-500" : "text-green-600" },
                       { label: "固定成本占营收", val: calc.fixedRatio, color: "text-orange-500" },
                       { label: "总成本占营收",   val: calc.totalRatio, color: "text-purple-600" },
-                      {
-                        label: "净利润估算",
-                        val: calc.netProfitValid
-                          ? (calc.netProfit >= 0 ? `¥${calc.netProfit.toFixed(0)}` : `-¥${Math.abs(calc.netProfit).toFixed(0)}`)
-                          : "—",
-                        color: calc.netProfit >= 0 ? "text-green-600" : "text-red-500",
-                      },
                     ].map((item) => (
                       <div key={item.label} className="flex justify-between">
                         <span className="text-stone-500">{item.label}</span>
                         <span className={`font-bold ${item.color}`}>{item.val}</span>
                       </div>
                     ))}
-                    {calc.varRatioHigh && (
-                      <p className="text-red-400 text-xs pt-1 border-t border-red-100">⚠️ 变动成本占比超出建议上限 5%，请检查成本结构</p>
-                    )}
                   </div>
                 </div>
               )}
+
               {section === "variable" && (
                 <div className="space-y-2">
                   <p className="text-xs text-stone-400 mb-2">按单价 × 数量录入，随业务量浮动的成本</p>
@@ -346,6 +408,7 @@ export default function App() {
                   </div>
                 </div>
               )}
+
               {section === "fixed" && (
                 <div className="space-y-2">
                   <p className="text-xs text-stone-400 mb-2">每月刚性支出，直接填月度金额</p>
@@ -380,6 +443,7 @@ export default function App() {
             </div>
           </div>
 
+          {/* 右：转化率 + ROI */}
           <div className="space-y-4">
             <div className="bg-white rounded-2xl shadow-sm border border-stone-100 p-4">
               <h3 className="text-sm font-semibold text-stone-700 mb-3">🎯 关键转化率</h3>
@@ -401,6 +465,7 @@ export default function App() {
                 ))}
               </div>
             </div>
+
             <div className="bg-gradient-to-br from-stone-800 to-stone-900 rounded-2xl p-4 text-white">
               <h3 className="text-sm font-semibold mb-3">💰 成本 & ROI 模型</h3>
               <div className="grid grid-cols-2 gap-2">
@@ -426,23 +491,12 @@ export default function App() {
                   <span className="text-xs text-stone-400">固定成本合计</span>
                   <span className="text-base font-bold text-orange-300">¥{calc.totalFixed.toFixed(0)}</span>
                 </div>
-                <div className="bg-white bg-opacity-10 rounded-xl px-4 py-2 flex justify-between items-center">
-                  <span className="text-xs text-stone-300 font-medium">月度总成本</span>
-                  <span className="text-lg font-bold text-yellow-400">¥{calc.totalCost.toFixed(0)}</span>
-                </div>
-                {calc.netProfitValid && (
-                  <div className={`rounded-xl px-4 py-2 flex justify-between items-center ${calc.netProfit >= 0 ? "bg-green-500 bg-opacity-20" : "bg-red-500 bg-opacity-20"}`}>
-                    <span className="text-xs text-stone-300 font-medium">净利润估算</span>
-                    <span className={`text-lg font-bold ${calc.netProfit >= 0 ? "text-green-400" : "text-red-400"}`}>
-                      {calc.netProfit >= 0 ? `¥${calc.netProfit.toFixed(0)}` : `-¥${Math.abs(calc.netProfit).toFixed(0)}`}
-                    </span>
-                  </div>
-                )}
               </div>
             </div>
           </div>
         </div>
 
+        {/* ── 漏斗可视化（有数据才显示）── */}
         {n(row.daodian) > 0 && (
           <div className="bg-white rounded-2xl shadow-sm border border-stone-100 p-4">
             <h3 className="text-sm font-semibold text-stone-700 mb-3">🔻 {MONTHS[activeMonth]} 用户转化漏斗</h3>
@@ -456,7 +510,10 @@ export default function App() {
                   <div key={f.key} className="flex items-center gap-3">
                     <span className="text-xs text-stone-400 w-16 text-right shrink-0">{f.label}</span>
                     <div className="flex-1 bg-stone-100 rounded-full h-6">
-                      <div className={`${COLORS[i]} h-6 rounded-full flex items-center justify-end pr-2 transition-all duration-500`} style={{ width: `${w}%` }}>
+                      <div
+                        className={`${COLORS[i]} h-6 rounded-full flex items-center justify-end pr-2 transition-all duration-500`}
+                        style={{ width: `${w}%` }}
+                      >
                         {val > 0 && <span className="text-white text-xs font-bold">{val}</span>}
                       </div>
                     </div>
@@ -467,49 +524,47 @@ export default function App() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-white rounded-2xl shadow-sm border border-stone-100 p-4">
-            <h3 className="text-sm font-semibold text-stone-700 mb-3">📈 全年营收 · 毛利 · 成本趋势</h3>
-            <ResponsiveContainer width="100%" height={180}>
-              <BarChart data={allMonths} barSize={5} barCategoryGap="30%">
-                <CartesianGrid strokeDasharray="3 3" stroke="#f5f5f4" />
-                <XAxis dataKey="name" tick={{ fontSize: 10 }} />
-                <YAxis tick={{ fontSize: 10 }} />
-                <Tooltip formatter={(v) => `¥${v}`} />
-                <Bar dataKey="营收"    fill="#d97706" radius={[3,3,0,0]} />
-                <Bar dataKey="毛利"    fill="#6ee7b7" radius={[3,3,0,0]} />
-                <Bar dataKey="变动成本" fill="#fca5a5" radius={[3,3,0,0]} />
-                <Bar dataKey="固定成本" fill="#fdba74" radius={[3,3,0,0]} />
-              </BarChart>
-            </ResponsiveContainer>
-            <div className="flex flex-wrap gap-3 justify-center mt-1 text-xs text-stone-400">
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-amber-500 inline-block" />营收</span>
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-emerald-300 inline-block" />毛利</span>
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-red-300 inline-block" />变动成本</span>
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-orange-300 inline-block" />固定成本</span>
-            </div>
+        {/* ── 图表（默认折叠）── */}
+        <Collapse title="📈 全年营收 · 毛利 · 成本趋势">
+          <ResponsiveContainer width="100%" height={180}>
+            <BarChart data={allMonths} barSize={5} barCategoryGap="30%">
+              <CartesianGrid strokeDasharray="3 3" stroke="#f5f5f4" />
+              <XAxis dataKey="name" tick={{ fontSize: 10 }} />
+              <YAxis tick={{ fontSize: 10 }} />
+              <Tooltip formatter={(v) => `¥${v}`} />
+              <Bar dataKey="营收"     fill="#d97706" radius={[3,3,0,0]} />
+              <Bar dataKey="毛利"     fill="#6ee7b7" radius={[3,3,0,0]} />
+              <Bar dataKey="变动成本" fill="#fca5a5" radius={[3,3,0,0]} />
+              <Bar dataKey="固定成本" fill="#fdba74" radius={[3,3,0,0]} />
+            </BarChart>
+          </ResponsiveContainer>
+          <div className="flex flex-wrap gap-3 justify-center mt-2 text-xs text-stone-400">
+            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-amber-500 inline-block"/>营收</span>
+            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-emerald-300 inline-block"/>毛利</span>
+            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-red-300 inline-block"/>变动成本</span>
+            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-orange-300 inline-block"/>固定成本</span>
           </div>
-          <div className="bg-white rounded-2xl shadow-sm border border-stone-100 p-4">
-            <h3 className="text-sm font-semibold text-stone-700 mb-3">👥 全年到店 vs 成交趋势</h3>
-            <ResponsiveContainer width="100%" height={180}>
-              <LineChart data={allMonths}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f5f5f4" />
-                <XAxis dataKey="name" tick={{ fontSize: 10 }} />
-                <YAxis tick={{ fontSize: 10 }} />
-                <Tooltip />
-                <Line type="monotone" dataKey="到店" stroke="#d97706" strokeWidth={2} dot={{ r: 3 }} />
-                <Line type="monotone" dataKey="成交" stroke="#6ee7b7" strokeWidth={2} dot={{ r: 3 }} />
-              </LineChart>
-            </ResponsiveContainer>
-            <div className="flex gap-4 justify-center mt-1 text-xs text-stone-400">
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-amber-500 inline-block" />到店</span>
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-emerald-300 inline-block" />成交</span>
-            </div>
-          </div>
-        </div>
+        </Collapse>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-stone-100 p-4">
-          <h3 className="text-sm font-semibold text-stone-700 mb-3">🔄 {MONTHS[activeMonth]} 变动成本明细</h3>
+        <Collapse title="👥 全年到店 vs 成交趋势">
+          <ResponsiveContainer width="100%" height={180}>
+            <LineChart data={allMonths}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#f5f5f4" />
+              <XAxis dataKey="name" tick={{ fontSize: 10 }} />
+              <YAxis tick={{ fontSize: 10 }} />
+              <Tooltip />
+              <Line type="monotone" dataKey="到店" stroke="#d97706" strokeWidth={2} dot={{ r: 3 }} />
+              <Line type="monotone" dataKey="成交" stroke="#6ee7b7" strokeWidth={2} dot={{ r: 3 }} />
+            </LineChart>
+          </ResponsiveContainer>
+          <div className="flex gap-4 justify-center mt-2 text-xs text-stone-400">
+            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-amber-500 inline-block"/>到店</span>
+            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-emerald-300 inline-block"/>成交</span>
+          </div>
+        </Collapse>
+
+        {/* ── 明细表（默认折叠）── */}
+        <Collapse title={`🔄 ${MONTHS[activeMonth]} 变动成本明细`}>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
@@ -547,10 +602,9 @@ export default function App() {
               </tfoot>
             </table>
           </div>
-        </div>
+        </Collapse>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-stone-100 p-4">
-          <h3 className="text-sm font-semibold text-stone-700 mb-3">🏪 {MONTHS[activeMonth]} 固定成本明细</h3>
+        <Collapse title={`🏪 ${MONTHS[activeMonth]} 固定成本明细`}>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
@@ -590,11 +644,11 @@ export default function App() {
               </tfoot>
             </table>
           </div>
-        </div>
+        </Collapse>
 
-        <div className="bg-stone-800 rounded-2xl p-4 text-stone-300 text-xs">
-          <h3 className="text-white font-semibold mb-2 text-sm">🧮 计算公式说明</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-1 gap-x-4 font-mono leading-relaxed">
+        {/* ── 公式说明（默认折叠）── */}
+        <Collapse title="🧮 计算公式说明" dark>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-1 gap-x-4 font-mono text-xs text-stone-300 leading-relaxed">
             <div>单篇UGC成本  = <span className="text-yellow-400">变动成本 ÷ 发帖人数</span></div>
             <div>私域获客成本 = <span className="text-yellow-400">变动成本 ÷ 加微人数</span></div>
             <div>单笔成交成本 = <span className="text-yellow-400">变动成本 ÷ 成交人数</span></div>
@@ -603,7 +657,7 @@ export default function App() {
             <div>营收达成率   = <span className="text-amber-400">实际营收 ÷ 目标营收</span></div>
             <div>净利润估算   = <span className="text-emerald-400">毛利 − 变动成本 − 固定成本</span></div>
           </div>
-        </div>
+        </Collapse>
 
       </div>
     </div>
