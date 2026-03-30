@@ -51,7 +51,6 @@ const defaultRow = () => ({
   fixedCosts: DEFAULT_FIXED_COSTS.map((f) => ({ ...f })),
 });
 
-// ── 可折叠区块组件 ──
 function Collapse({ title, dark = false, children }) {
   const [open, setOpen] = useState(false);
   return (
@@ -260,9 +259,8 @@ export default function App() {
           ))}
         </div>
 
-        {/* ── ★ 核心指标卡片（置顶）★ ── */}
+        {/* ── 核心指标卡片 ── */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {/* 净利润 */}
           <div className={`rounded-2xl p-4 flex flex-col gap-1 text-white ${
             !calc.netProfitValid
               ? "bg-stone-400"
@@ -281,21 +279,18 @@ export default function App() {
             <span className="text-xs opacity-50">毛利 − 变动 − 固定</span>
           </div>
 
-          {/* 营收达成率 */}
           <div className="bg-amber-600 rounded-2xl p-4 flex flex-col gap-1 text-white">
             <span className="text-xs opacity-75">🎯 营收达成率</span>
             <span className="text-2xl font-bold leading-tight">{calc.achievePct}</span>
             <span className="text-xs opacity-50">实际 ¥{n(row.revenue).toLocaleString()}</span>
           </div>
 
-          {/* 毛利率 */}
           <div className="bg-teal-600 rounded-2xl p-4 flex flex-col gap-1 text-white">
             <span className="text-xs opacity-75">📊 毛利率</span>
             <span className="text-2xl font-bold leading-tight">{calc.gpRate}</span>
             <span className="text-xs opacity-50">毛利 ¥{n(row.grossProfit).toLocaleString()}</span>
           </div>
 
-          {/* 月度总成本 */}
           <div className={`rounded-2xl p-4 flex flex-col gap-1 text-white ${calc.varRatioHigh ? "bg-red-500" : "bg-stone-700"}`}>
             <span className="text-xs opacity-75">🏷️ 月度总成本</span>
             <span className="text-2xl font-bold leading-tight">¥{calc.totalCost.toFixed(0)}</span>
@@ -310,10 +305,9 @@ export default function App() {
           </div>
         )}
 
-        {/* ── Main Grid（输入区 + 实时指标）── */}
+        {/* ── Main Grid ── */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-          {/* 左：输入面板 */}
           <div className="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden">
             <div className="flex border-b border-stone-100">
               {SECTIONS.map((s) => (
@@ -443,7 +437,6 @@ export default function App() {
             </div>
           </div>
 
-          {/* 右：转化率 + ROI */}
           <div className="space-y-4">
             <div className="bg-white rounded-2xl shadow-sm border border-stone-100 p-4">
               <h3 className="text-sm font-semibold text-stone-700 mb-3">🎯 关键转化率</h3>
@@ -496,7 +489,7 @@ export default function App() {
           </div>
         </div>
 
-        {/* ── 漏斗可视化（有数据才显示）── */}
+        {/* ── 漏斗可视化 ── */}
         {n(row.daodian) > 0 && (
           <div className="bg-white rounded-2xl shadow-sm border border-stone-100 p-4">
             <h3 className="text-sm font-semibold text-stone-700 mb-3">🔻 {MONTHS[activeMonth]} 用户转化漏斗</h3>
@@ -524,7 +517,7 @@ export default function App() {
           </div>
         )}
 
-        {/* ── 图表（默认折叠）── */}
+        {/* ── 图表 ── */}
         <Collapse title="📈 全年营收 · 毛利 · 成本趋势">
           <ResponsiveContainer width="100%" height={180}>
             <BarChart data={allMonths} barSize={5} barCategoryGap="30%">
@@ -563,7 +556,7 @@ export default function App() {
           </div>
         </Collapse>
 
-        {/* ── 明细表（默认折叠）── */}
+        {/* ── 明细表 ── */}
         <Collapse title={`🔄 ${MONTHS[activeMonth]} 变动成本明细`}>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
@@ -646,7 +639,7 @@ export default function App() {
           </div>
         </Collapse>
 
-        {/* ── 公式说明（默认折叠）── */}
+        {/* ── 公式说明 ── */}
         <Collapse title="🧮 计算公式说明" dark>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-y-1 gap-x-4 font-mono text-xs text-stone-300 leading-relaxed">
             <div>单篇UGC成本  = <span className="text-yellow-400">变动成本 ÷ 发帖人数</span></div>
@@ -658,6 +651,12 @@ export default function App() {
             <div>净利润估算   = <span className="text-emerald-400">毛利 − 变动成本 − 固定成本</span></div>
           </div>
         </Collapse>
+
+        {/* ── 保密声明 ── */}
+        <div className="text-center text-xs text-stone-400 py-4 border-t border-stone-200 mt-2 leading-relaxed">
+          🔒 本看板为「初见 · 经营数据看板」内部专用，数据涉及商业机密，<br />
+          严禁截图或以任何形式对外泄露，违者将依法承担相应法律责任。
+        </div>
 
       </div>
     </div>
