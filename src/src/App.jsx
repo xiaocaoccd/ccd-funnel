@@ -15,26 +15,26 @@ const WINDOW_SIZE  = 5;
 const MONTHS = ["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
 
 const DEFAULT_VAR_COSTS = [
-  { id: 1, name: "胶片冲印耗材",  desc: "冲印所需耗材成本",       unitCost: 0, qty: "" },
-  { id: 2, name: "设备清洁维护",  desc: "相机清洁保养服务",       unitCost: 0, qty: "" },
-  { id: 3, name: "周边物料礼品",  desc: "贴纸、挂绳等周边物料",   unitCost: 0, qty: "" },
-  { id: 4, name: "消费抵扣券",    desc: "核销消费抵扣券成本",     unitCost: 0, qty: "" },
-  { id: 5, name: "冲印优惠券",    desc: "核销冲印优惠券成本",     unitCost: 0, qty: "" },
-  { id: 6, name: "活动赠品",      desc: "节日 / 活动赠品物料",    unitCost: 0, qty: "" },
+  { id: 1, name: "胶片冲印耗材",  desc: "冲印所需耗材成本",     unitCost: 0, qty: "" },
+  { id: 2, name: "设备清洁维护",  desc: "相机清洁保养服务",     unitCost: 0, qty: "" },
+  { id: 3, name: "周边物料礼品",  desc: "贴纸、挂绳等周边物料", unitCost: 0, qty: "" },
+  { id: 4, name: "消费抵扣券",    desc: "核销消费抵扣券成本",   unitCost: 0, qty: "" },
+  { id: 5, name: "冲印优惠券",    desc: "核销冲印优惠券成本",   unitCost: 0, qty: "" },
+  { id: 6, name: "活动赠品",      desc: "节日 / 活动赠品物料",  unitCost: 0, qty: "" },
 ];
 
 const DEFAULT_FIXED_COSTS = [
-  { id: 1, name: "店铺租金",      desc: "月度店铺租金",           amount: "" },
-  { id: 2, name: "水电网络费",    desc: "水、电、宽带月度费用",   amount: "" },
-  { id: 3, name: "员工薪资",      desc: "本月员工薪资合计",       amount: "" },
-  { id: 4, name: "设备折旧",      desc: "相机等设备折旧摊销",     amount: "" },
-  { id: 5, name: "其他固定支出",  desc: "其他月度固定费用",       amount: "" },
+  { id: 1, name: "店铺租金",     desc: "月度店铺租金",         amount: "" },
+  { id: 2, name: "水电网络费",   desc: "水、电、宽带月度费用", amount: "" },
+  { id: 3, name: "员工薪资",     desc: "本月员工薪资合计",     amount: "" },
+  { id: 4, name: "设备折旧",     desc: "相机等设备折旧摊销",   amount: "" },
+  { id: 5, name: "其他固定支出", desc: "其他月度固定费用",     amount: "" },
 ];
 
+// ── hege 已完整移除 ──
 const FUNNEL_FIELDS = [
   { key: "daodian",   label: "到店人数",   color: "bg-amber-600" },
   { key: "fatie",     label: "发帖人数",   color: "bg-amber-500" },
-  { key: "hege",      label: "合格发帖数", color: "bg-yellow-500" },
   { key: "baoliu7",   label: "7天保留数",  color: "bg-yellow-400" },
   { key: "jiawei",    label: "加微人数",   color: "bg-orange-500" },
   { key: "jinqun",    label: "进群人数",   color: "bg-orange-400" },
@@ -51,7 +51,7 @@ const pct    = (a, b) => fmtPct(pctNum(a, b));
 const yuan   = (a, b) => n(b) > 0 ? "¥" + (n(a) / n(b)).toFixed(0) : "—";
 
 const defaultRow = () => ({
-  daodian: "", fatie: "", hege: "", baoliu7: "",
+  daodian: "", fatie: "", baoliu7: "",
   jiawei: "", jinqun: "", chengjiao: "", fugou: "", zhuanjie: "",
   revenue: "", revenueTarget: "", grossProfit: "",
   qunTotal: "", qunActive: "", kocCount: "", xiaohongshu: "", douyin: "",
@@ -76,7 +76,6 @@ const ensureYear = (data, year) => {
   return { ...data, [year]: initYear() };
 };
 
-// ── Collapsible：支持 defaultOpen（CCD）和 dark（初见）两种用法 ──
 function Collapsible({ title, dark = false, defaultOpen = false, children }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
@@ -100,14 +99,14 @@ function Collapsible({ title, dark = false, defaultOpen = false, children }) {
 function GoalCard({ label, actual, target, unit, desc }) {
   let status = "gray";
   if (actual !== null) {
-    if (actual >= target)          status = "green";
+    if (actual >= target)            status = "green";
     else if (actual >= target * 0.7) status = "yellow";
-    else                           status = "red";
+    else                             status = "red";
   }
   const C = {
-    green:  { bg: "bg-green-50",  text: "text-green-700",  badge: "bg-green-100 text-green-700",  tag: "达标 ✓" },
+    green:  { bg: "bg-green-50",  text: "text-green-700",  badge: "bg-green-100 text-green-700",   tag: "达标 ✓" },
     yellow: { bg: "bg-yellow-50", text: "text-yellow-700", badge: "bg-yellow-100 text-yellow-700", tag: "接近" },
-    red:    { bg: "bg-red-50",    text: "text-red-600",    badge: "bg-red-100 text-red-600",       tag: "未达标" },
+    red:    { bg: "bg-red-50",    text: "text-red-600",    badge: "bg-red-100 text-red-600",        tag: "未达标" },
     gray:   { bg: "bg-stone-50",  text: "text-stone-400",  badge: "bg-stone-100 text-stone-400",   tag: "待录入" },
   }[status];
   return (
@@ -153,7 +152,6 @@ export default function App() {
             next[yr][r.month_index] = {
               daodian:       r.daodian        ?? "",
               fatie:         r.fatie          ?? "",
-              hege:          r.hege           ?? "",
               baoliu7:       r.baoliu7        ?? "",
               jiawei:        r.jiawei         ?? "",
               jinqun:        r.jinqun         ?? "",
@@ -168,7 +166,7 @@ export default function App() {
               kocCount:      r.koc_count      ?? "",
               xiaohongshu:   r.xiaohongshu    ?? "",
               douyin:        r.douyin         ?? "",
-              rewards:    r.rewards    ?? DEFAULT_VAR_COSTS.map((x) => ({ ...x })),
+              rewards:    r.rewards     ?? DEFAULT_VAR_COSTS.map((x) => ({ ...x })),
               fixedCosts: r.fixed_costs ?? DEFAULT_FIXED_COSTS.map((x) => ({ ...x })),
             };
           });
@@ -179,18 +177,17 @@ export default function App() {
     })();
   }, []);
 
-  // ── 云端防抖保存（复合主键 year + month_index）──
+  // ── 云端防抖保存 ──
   const scheduleSave = (year, idx, rowData) => {
     if (saveTimer.current) clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(async () => {
       setSaving(true);
       await supabase.from("monthly_data").upsert(
         {
-          year:           year,
+          year,
           month_index:    idx,
           daodian:        n(rowData.daodian),
           fatie:          n(rowData.fatie),
-          hege:           n(rowData.hege),
           baoliu7:        n(rowData.baoliu7),
           jiawei:         n(rowData.jiawei),
           jinqun:         n(rowData.jinqun),
@@ -275,12 +272,11 @@ export default function App() {
       fatieRate, baoliuRate, qunActRate,
       fatiePct:      fmtPct(fatieRate),
       baoliuPct:     fmtPct(baoliuRate),
-      hegePct:       pct(r.hege,       r.fatie),
-      jiawei_pct:    pct(r.jiawei,     r.daodian),
-      jinqun_pct:    pct(r.jinqun,     r.jiawei),
-      chengjiao_pct: pct(r.chengjiao,  r.daodian),
-      fugou_pct:     pct(r.fugou,      r.chengjiao),
-      zhuanjie_pct:  pct(r.zhuanjie,   r.chengjiao),
+      jiawei_pct:    pct(r.jiawei,    r.daodian),
+      jinqun_pct:    pct(r.jinqun,    r.jiawei),
+      chengjiao_pct: pct(r.chengjiao, r.daodian),
+      fugou_pct:     pct(r.fugou,     r.chengjiao),
+      zhuanjie_pct:  pct(r.zhuanjie,  r.chengjiao),
       qunActPct:     fmtPct(qunActRate),
       totalVar, totalFixed, totalCost,
       varRatio:   varPctRaw   !== null ? varPctRaw.toFixed(1)   + "%" : "—",
@@ -291,7 +287,6 @@ export default function App() {
       achievePct: n(r.revenueTarget) > 0 ? (rev / n(r.revenueTarget) * 100).toFixed(1) + "%" : "—",
       aov:        n(r.chengjiao) > 0 ? "¥" + (rev / n(r.chengjiao)).toFixed(0) : "—",
       ugcCost:    yuan(totalVar, r.fatie),
-      hegeCost:   yuan(totalVar, r.hege),
       privCost:   yuan(totalVar, r.jiawei),
       dealCost:   yuan(totalVar, r.chengjiao),
       netProfit, netProfitValid: gp > 0,
@@ -364,8 +359,7 @@ export default function App() {
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-xs font-semibold text-stone-500 shrink-0">📅 年份</span>
             <button onClick={handleWindowPrev}
-              className="w-7 h-7 flex items-center justify-center rounded-full bg-stone-100 text-stone-400 hover:bg-amber-100 hover:text-amber-700 transition-all font-bold text-lg leading-none select-none"
-              title="查看更早年份">‹</button>
+              className="w-7 h-7 flex items-center justify-center rounded-full bg-stone-100 text-stone-400 hover:bg-amber-100 hover:text-amber-700 transition-all font-bold text-lg leading-none select-none">‹</button>
             {visibleYears.map((y) => (
               <button key={y} onClick={() => handleYearClick(y)}
                 className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-bold transition-all ${
@@ -382,8 +376,7 @@ export default function App() {
               </button>
             ))}
             <button onClick={handleWindowNext}
-              className="w-7 h-7 flex items-center justify-center rounded-full bg-stone-100 text-stone-400 hover:bg-amber-100 hover:text-amber-700 transition-all font-bold text-lg leading-none select-none"
-              title="查看更晚年份">›</button>
+              className="w-7 h-7 flex items-center justify-center rounded-full bg-stone-100 text-stone-400 hover:bg-amber-100 hover:text-amber-700 transition-all font-bold text-lg leading-none select-none">›</button>
           </div>
         </div>
 
@@ -443,7 +436,7 @@ export default function App() {
         </div>
 
         {/* ── 运营目标 KPI ── */}
-        <Collapsible title="🚦 运营目标达成状态（方案5项核心KPI对照）" defaultOpen={true}>
+        <Collapsible title="🚦 运营目标达成状态（核心KPI对照）" defaultOpen={true}>
           <div className="grid grid-cols-1 md:grid-cols-5 gap-2">
             <GoalCard label="发帖转化率"    actual={calc.fatieRate}  target={40}  unit="%" desc="发帖÷到店" />
             <GoalCard label="7天内容保留率" actual={calc.baoliuRate} target={70}  unit="%" desc="7天保留÷发帖" />
@@ -502,6 +495,7 @@ export default function App() {
             </div>
             <div className="p-4">
 
+              {/* 漏斗 Tab */}
               {section === "funnel" && (
                 <div className="space-y-2">
                   {FUNNEL_FIELDS.map((f) => (
@@ -540,6 +534,7 @@ export default function App() {
                 </div>
               )}
 
+              {/* 社群 Tab */}
               {section === "community" && (
                 <div className="space-y-3">
                   <p className="text-xs text-stone-400 mb-1">记录社群健康度与KOC运营数据（月度手动更新）</p>
@@ -574,6 +569,7 @@ export default function App() {
                 </div>
               )}
 
+              {/* 营收 Tab */}
               {section === "revenue" && (
                 <div className="space-y-3">
                   {[
@@ -598,7 +594,7 @@ export default function App() {
                       { label: "总成本占营收",   val: calc.totalRatio, color: "text-purple-600" },
                       {
                         label: "净利润估算",
-                        val:   calc.netProfitValid
+                        val: calc.netProfitValid
                           ? (calc.netProfit >= 0 ? `¥${calc.netProfit.toFixed(0)}` : `-¥${Math.abs(calc.netProfit).toFixed(0)}`)
                           : "—",
                         color: calc.netProfit >= 0 ? "text-green-600" : "text-red-500",
@@ -613,6 +609,7 @@ export default function App() {
                 </div>
               )}
 
+              {/* 变动成本 Tab */}
               {section === "variable" && (
                 <div className="space-y-2">
                   <p className="text-xs text-stone-400 mb-2">按单价 × 数量录入，随业务量浮动的成本</p>
@@ -654,6 +651,7 @@ export default function App() {
                 </div>
               )}
 
+              {/* 固定成本 Tab */}
               {section === "fixed" && (
                 <div className="space-y-2">
                   <p className="text-xs text-stone-400 mb-2">每月刚性支出，直接填月度金额</p>
@@ -694,14 +692,13 @@ export default function App() {
               <h3 className="text-sm font-semibold text-stone-700 mb-3">🎯 全链路转化率</h3>
               <div className="space-y-2">
                 {[
-                  { label: "发帖转化率", val: calc.fatiePct,      sub: "发帖÷到店",    target: "≥40%", warn: calc.warnFatie },
-                  { label: "合格发帖率", val: calc.hegePct,       sub: "合格÷发帖",    target: null,   warn: false },
+                  { label: "发帖转化率", val: calc.fatiePct,      sub: "发帖÷到店",   target: "≥40%", warn: calc.warnFatie },
                   { label: "7天保留率",  val: calc.baoliuPct,     sub: "7天保留÷发帖", target: "≥70%", warn: calc.warnBaoliu },
-                  { label: "加微率",     val: calc.jiawei_pct,    sub: "加微÷到店",    target: null,   warn: false },
-                  { label: "进群率",     val: calc.jinqun_pct,    sub: "进群÷加微",    target: null,   warn: false },
-                  { label: "到店成交率", val: calc.chengjiao_pct, sub: "成交÷到店",    target: null,   warn: false },
-                  { label: "复购率",     val: calc.fugou_pct,     sub: "复购÷成交",    target: null,   warn: false },
-                  { label: "转介绍率",   val: calc.zhuanjie_pct,  sub: "转介绍÷成交",  target: null,   warn: false },
+                  { label: "加微率",     val: calc.jiawei_pct,    sub: "加微÷到店",   target: null,   warn: false },
+                  { label: "进群率",     val: calc.jinqun_pct,    sub: "进群÷加微",   target: null,   warn: false },
+                  { label: "到店成交率", val: calc.chengjiao_pct, sub: "成交÷到店",   target: null,   warn: false },
+                  { label: "复购率",     val: calc.fugou_pct,     sub: "复购÷成交",   target: null,   warn: false },
+                  { label: "转介绍率",   val: calc.zhuanjie_pct,  sub: "转介绍÷成交", target: null,   warn: false },
                 ].map((item) => (
                   <div key={item.label} className="flex justify-between items-center text-xs">
                     <span className="text-stone-500">
@@ -719,12 +716,11 @@ export default function App() {
               <h3 className="text-sm font-semibold mb-3">💰 成本 & ROI 模型</h3>
               <div className="grid grid-cols-2 gap-2">
                 {[
-                  { label: "单篇UGC成本",  val: calc.ugcCost,  sub: "变动÷发帖数",     high: false },
-                  { label: "合格帖成本",    val: calc.hegeCost, sub: "变动÷合格发帖数", high: false },
-                  { label: "私域获客成本",  val: calc.privCost, sub: "变动÷加微数",     high: false },
-                  { label: "单笔成交成本",  val: calc.dealCost, sub: "变动÷成交数",     high: false },
-                  { label: "变动成本占比",  val: calc.varRatio, sub: "建议控制≤5%",     high: calc.varHigh },
-                  { label: "客单价",        val: calc.aov,      sub: "营收÷成交人数",   high: false },
+                  { label: "单篇UGC成本",  val: calc.ugcCost,  sub: "变动÷发帖数",   high: false },
+                  { label: "私域获客成本",  val: calc.privCost, sub: "变动÷加微数",   high: false },
+                  { label: "单笔成交成本",  val: calc.dealCost, sub: "变动÷成交数",   high: false },
+                  { label: "变动成本占比",  val: calc.varRatio, sub: "建议控制≤5%",   high: calc.varHigh },
+                  { label: "客单价",        val: calc.aov,      sub: "营收÷成交人数", high: false },
                 ].map((item) => (
                   <div key={item.label} className={`rounded-xl p-3 ${item.high ? "bg-red-500 bg-opacity-40" : "bg-white bg-opacity-10"}`}>
                     <div className="text-base font-bold">{item.val}</div>
@@ -801,8 +797,8 @@ export default function App() {
                 </BarChart>
               </ResponsiveContainer>
               <div className="flex flex-wrap gap-3 justify-center mt-1 text-xs text-stone-400">
-                {[{ c:"bg-amber-500",t:"营收" },{ c:"bg-emerald-300",t:"毛利" },{ c:"bg-red-300",t:"变动成本" },{ c:"bg-orange-300",t:"固定成本" }].map((x) => (
-                  <span key={x.t} className="flex items-center gap-1"><span className={`w-2 h-2 rounded ${x.c} inline-block`} />{x.t}</span>
+                {[{c:"bg-amber-500",t:"营收"},{c:"bg-emerald-300",t:"毛利"},{c:"bg-red-300",t:"变动成本"},{c:"bg-orange-300",t:"固定成本"}].map((x) => (
+                  <span key={x.t} className="flex items-center gap-1"><span className={`w-2 h-2 rounded ${x.c} inline-block`}/>{x.t}</span>
                 ))}
               </div>
             </div>
@@ -819,8 +815,8 @@ export default function App() {
                 </LineChart>
               </ResponsiveContainer>
               <div className="flex gap-4 justify-center mt-1 text-xs text-stone-400">
-                {[{ c:"bg-amber-500",t:"到店" },{ c:"bg-emerald-300",t:"成交" }].map((x) => (
-                  <span key={x.t} className="flex items-center gap-1"><span className={`w-2 h-2 rounded ${x.c} inline-block`} />{x.t}</span>
+                {[{c:"bg-amber-500",t:"到店"},{c:"bg-emerald-300",t:"成交"}].map((x) => (
+                  <span key={x.t} className="flex items-center gap-1"><span className={`w-2 h-2 rounded ${x.c} inline-block`}/>{x.t}</span>
                 ))}
               </div>
             </div>
@@ -829,43 +825,41 @@ export default function App() {
 
         {/* ── 跨年对比 ── */}
         <Collapsible title={`🗂️ 跨年度营收对比（${visibleYears[0]}–${visibleYears[WINDOW_SIZE-1]}）`}>
-          <div>
-            <h3 className="text-sm font-semibold text-stone-700 mb-3">各年度营收 · 毛利汇总（当前窗口）</h3>
-            <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={yearCompare} barCategoryGap="35%">
-                <CartesianGrid strokeDasharray="3 3" stroke="#f5f5f4" />
-                <XAxis dataKey="name" tick={{ fontSize: 11 }} />
-                <YAxis tick={{ fontSize: 10 }} />
-                <Tooltip formatter={(v) => `¥${v.toFixed(0)}`} />
-                <Bar dataKey="年度营收" fill="#d97706" radius={[4,4,0,0]} />
-                <Bar dataKey="年度毛利" fill="#6ee7b7" radius={[4,4,0,0]} />
-              </BarChart>
-            </ResponsiveContainer>
-            <div className="flex flex-wrap gap-4 justify-center mt-2 text-xs text-stone-400">
-              {[{ c:"bg-amber-500",t:"年度营收" },{ c:"bg-emerald-300",t:"年度毛利" }].map((x) => (
-                <span key={x.t} className="flex items-center gap-1"><span className={`w-2 h-2 rounded ${x.c} inline-block`} />{x.t}</span>
-              ))}
-            </div>
-            <div className="mt-3 grid grid-cols-2 md:grid-cols-5 gap-2">
-              {yearCompare.map((y, idx) => (
-                <div key={y.name} className={`rounded-xl p-3 text-center border transition-all ${
-                  activeYear === visibleYears[idx] ? "border-amber-400 bg-amber-50" : "border-stone-100 bg-stone-50"
-                }`}>
-                  <div className="text-xs font-bold text-stone-600 flex items-center justify-center gap-1">
-                    {y.name}
-                    {visibleYears[idx] === CURRENT_YEAR && (
-                      <span className="text-xs bg-amber-100 text-amber-600 px-1 rounded font-bold">今</span>
-                    )}
-                  </div>
-                  <div className="text-sm font-bold text-amber-700 mt-1">
-                    {y.年度营收 > 0 ? `¥${y.年度营收.toFixed(0)}` : "—"}
-                  </div>
-                  <div className="text-xs text-teal-600">
-                    {y.年度毛利 > 0 ? `毛利¥${y.年度毛利.toFixed(0)}` : ""}
-                  </div>
+          <h3 className="text-sm font-semibold text-stone-700 mb-3">各年度营收 · 毛利汇总（当前窗口）</h3>
+          <ResponsiveContainer width="100%" height={200}>
+            <BarChart data={yearCompare} barCategoryGap="35%">
+              <CartesianGrid strokeDasharray="3 3" stroke="#f5f5f4" />
+              <XAxis dataKey="name" tick={{ fontSize: 11 }} />
+              <YAxis tick={{ fontSize: 10 }} />
+              <Tooltip formatter={(v) => `¥${v.toFixed(0)}`} />
+              <Bar dataKey="年度营收" fill="#d97706" radius={[4,4,0,0]} />
+              <Bar dataKey="年度毛利" fill="#6ee7b7" radius={[4,4,0,0]} />
+            </BarChart>
+          </ResponsiveContainer>
+          <div className="flex flex-wrap gap-4 justify-center mt-2 text-xs text-stone-400">
+            {[{c:"bg-amber-500",t:"年度营收"},{c:"bg-emerald-300",t:"年度毛利"}].map((x) => (
+              <span key={x.t} className="flex items-center gap-1"><span className={`w-2 h-2 rounded ${x.c} inline-block`}/>{x.t}</span>
+            ))}
+          </div>
+          <div className="mt-3 grid grid-cols-2 md:grid-cols-5 gap-2">
+            {yearCompare.map((y, idx) => (
+              <div key={y.name} className={`rounded-xl p-3 text-center border transition-all ${
+                activeYear === visibleYears[idx] ? "border-amber-400 bg-amber-50" : "border-stone-100 bg-stone-50"
+              }`}>
+                <div className="text-xs font-bold text-stone-600 flex items-center justify-center gap-1">
+                  {y.name}
+                  {visibleYears[idx] === CURRENT_YEAR && (
+                    <span className="text-xs bg-amber-100 text-amber-600 px-1 rounded font-bold">今</span>
+                  )}
                 </div>
-              ))}
-            </div>
+                <div className="text-sm font-bold text-amber-700 mt-1">
+                  {y.年度营收 > 0 ? `¥${y.年度营收.toFixed(0)}` : "—"}
+                </div>
+                <div className="text-xs text-teal-600">
+                  {y.年度毛利 > 0 ? `毛利¥${y.年度毛利.toFixed(0)}` : ""}
+                </div>
+              </div>
+            ))}
           </div>
         </Collapsible>
 
@@ -957,7 +951,6 @@ export default function App() {
         <Collapsible title="🧮 计算公式说明" dark>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-y-1.5 gap-x-6 font-mono text-xs text-stone-300 leading-relaxed">
             <div>单篇UGC成本  = <span className="text-yellow-400">变动成本 ÷ 发帖人数</span></div>
-            <div>合格帖成本   = <span className="text-yellow-400">变动成本 ÷ 合格发帖数</span></div>
             <div>私域获客成本 = <span className="text-yellow-400">变动成本 ÷ 加微人数</span></div>
             <div>单笔成交成本 = <span className="text-yellow-400">变动成本 ÷ 成交人数</span></div>
             <div>7天保留率    = <span className="text-green-400">7天保留数 ÷ 发帖人数</span></div>
